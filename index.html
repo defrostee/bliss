@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +33,6 @@
     overflow-x: hidden;
   }
 
-  /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
@@ -67,7 +67,6 @@
   }
   .nav-cta:hover { background: var(--rose-dk) !important; color: #fff !important; }
 
-  /* ── HERO ── */
   .hero {
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -104,10 +103,7 @@
     color: var(--ink);
     animation: fadeUp 0.6s 0.1s ease both;
   }
-  .hero h1 em {
-    font-style: italic;
-    color: var(--plum);
-  }
+  .hero h1 em { font-style: italic; color: var(--plum); }
 
   .hero-sub {
     max-width: 520px;
@@ -164,12 +160,8 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── DIVIDER ── */
-  .section-divider {
-    height: 1px; background: var(--border); margin: 0 2rem;
-  }
+  .section-divider { height: 1px; background: var(--border); margin: 0 2rem; }
 
-  /* ── FEATURES ── */
   .section {
     padding: 6rem 2rem;
     max-width: 1100px;
@@ -210,7 +202,6 @@
   .feat-title { font-weight: 500; font-size: 1rem; color: var(--ink); margin-bottom: 0.4rem; }
   .feat-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
 
-  /* ── COMMANDS ── */
   .commands-section {
     background: var(--blush-3);
     border-top: 1px solid var(--border);
@@ -251,12 +242,8 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .cmd-desc {
-    font-size: 0.82rem; color: var(--muted); line-height: 1.5;
-    padding-top: 0.1rem;
-  }
+  .cmd-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; padding-top: 0.1rem; }
 
-  /* ── STATUS ── */
   .status-section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
   .status-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
@@ -266,15 +253,11 @@
     border-radius: 16px; padding: 1.5rem;
     display: flex; align-items: center; gap: 1rem;
   }
-  .status-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .dot-green { background: #5cb85c; box-shadow: 0 0 0 4px rgba(92,184,92,0.2); animation: pulse 2s infinite; }
-  .dot-yellow { background: #f0ad4e; box-shadow: 0 0 0 4px rgba(240,173,78,0.2); }
   .status-info .status-name { font-weight: 500; font-size: 0.9rem; color: var(--ink); }
   .status-info .status-val { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
 
-  /* ── ADD BOT BANNER ── */
   .add-banner {
     background: var(--blush-4);
     border-top: 1px solid var(--border);
@@ -290,7 +273,6 @@
   .add-banner h2 em { font-style: italic; color: var(--plum); }
   .add-banner p { color: var(--muted); font-size: 1rem; margin-bottom: 2rem; }
 
-  /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
     padding: 2rem 2.5rem;
@@ -303,7 +285,6 @@
   footer a { color: var(--muted); text-decoration: none; font-size: 0.8rem; }
   footer a:hover { color: var(--plum); }
 
-  /* ── MOBILE ── */
   @media (max-width: 600px) {
     nav { padding: 0 1.25rem; }
     .nav-links { display: none; }
@@ -313,7 +294,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <span class="nav-logo">bliss</span>
   <div class="nav-links">
@@ -324,7 +304,6 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-pill">
     <span class="pill-dot"></span>
@@ -339,38 +318,35 @@
   </p>
 
   <div class="hero-btns">
-    <a href="https://discord.com/oauth2/authorize" class="btn-primary" id="add-bot-btn">
+    <a href="https://discord.com/oauth2/authorize" class="btn-primary">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       add bliss to your server
     </a>
-    <a href="#commands" class="btn-outline">
-      view commands
-    </a>
+    <a href="#commands" class="btn-outline">view commands</a>
   </div>
 
   <div class="hero-cards">
     <div class="stat-card">
-      <div class="num" id="server-count">—</div>
+      <div class="num" id="server-count">...</div>
       <div class="lbl">servers</div>
     </div>
     <div class="stat-card">
-      <div class="num">16</div>
+      <div class="num">10</div>
       <div class="lbl">commands</div>
     </div>
     <div class="stat-card">
-      <div class="num">&lt; 50ms</div>
+      <div class="num" id="latency-stat">...</div>
       <div class="lbl">avg latency</div>
     </div>
     <div class="stat-card">
-      <div class="num">99.9%</div>
-      <div class="lbl">uptime</div>
+      <div class="num">free</div>
+      <div class="lbl">always</div>
     </div>
   </div>
 </section>
 
 <div class="section-divider"></div>
 
-<!-- FEATURES -->
 <section class="section" id="features">
   <p class="section-label">what bliss does</p>
   <h2 class="section-title">everything you need,<br><em>nothing you don't.</em></h2>
@@ -409,138 +385,66 @@
   </div>
 </section>
 
-<!-- COMMANDS -->
 <section class="commands-section" id="commands">
   <div class="commands-inner">
     <p class="section-label">reference</p>
     <h2 class="section-title" style="margin-bottom:3rem">all commands</h2>
 
     <div class="cmd-groups">
-
       <div class="cmd-group">
         <div class="cmd-group-header">🌸 Everyone</div>
         <div class="cmd-list">
-          <div class="cmd-item">
-            <span class="cmd-name">-ping</span>
-            <span class="cmd-desc">Check if Bliss is alive. Watch your step.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-help</span>
-            <span class="cmd-desc">Show command list &amp; ping owner + mod role.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-fnitro option:react</span>
-            <span class="cmd-desc">Fake react with a nitro emoji as yourself via webhook.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-fnitro option:sticker</span>
-            <span class="cmd-desc">Send a nitro sticker as yourself via webhook.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-color color:#hex</span>
-            <span class="cmd-desc">Create or update your personal cosmetic color role.</span>
-          </div>
+          <div class="cmd-item"><span class="cmd-name">-ping</span><span class="cmd-desc">Check if Bliss is alive. Watch your step.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-help</span><span class="cmd-desc">Show command list &amp; ping owner + mod role.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-fnitro option:react</span><span class="cmd-desc">Fake react with a nitro emoji as yourself via webhook.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-fnitro option:sticker</span><span class="cmd-desc">Send a nitro sticker as yourself via webhook.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-color color:#hex</span><span class="cmd-desc">Create or update your personal cosmetic color role.</span></div>
         </div>
       </div>
 
       <div class="cmd-group">
         <div class="cmd-group-header">🔒 Mod Role</div>
         <div class="cmd-list">
-          <div class="cmd-item">
-            <span class="cmd-name">-nuke #channel</span>
-            <span class="cmd-desc">Delete all messages in the specified channel by cloning and removing it.</span>
-          </div>
+          <div class="cmd-item"><span class="cmd-name">-nuke #channel</span><span class="cmd-desc">Delete all messages in the specified channel by cloning and removing it.</span></div>
         </div>
       </div>
 
       <div class="cmd-group">
         <div class="cmd-group-header">👑 Owner Only</div>
         <div class="cmd-list">
-          <div class="cmd-item">
-            <span class="cmd-name">-abump</span>
-            <span class="cmd-desc">Trigger Disboard's /bump command automatically.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-s!mr @role</span>
-            <span class="cmd-desc">Set the server's mod role for restricted commands.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-s!ping set:yes/no</span>
-            <span class="cmd-desc">Enable or disable ping protection on a user or role.</span>
-          </div>
-          <div class="cmd-item">
-            <span class="cmd-name">-s!autorole @role</span>
-            <span class="cmd-desc">Set the role automatically given to every new member.</span>
-          </div>
+          <div class="cmd-item"><span class="cmd-name">-abump</span><span class="cmd-desc">Trigger Disboard's /bump command automatically.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-s!mr @role</span><span class="cmd-desc">Set the server's mod role for restricted commands.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-s!ping set:yes/no</span><span class="cmd-desc">Enable or disable ping protection on a user or role.</span></div>
+          <div class="cmd-item"><span class="cmd-name">-s!autorole @role</span><span class="cmd-desc">Set the role automatically given to every new member.</span></div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- STATUS -->
 <section class="status-section" id="status">
   <p class="section-label">system</p>
   <h2 class="section-title">current <em>status</em></h2>
 
   <div class="status-grid">
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Bot API</div>
-        <div class="status-val">Operational</div>
-      </div>
-    </div>
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Gateway</div>
-        <div class="status-val">Connected</div>
-      </div>
-    </div>
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Railway Host</div>
-        <div class="status-val">Running</div>
-      </div>
-    </div>
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Webhooks</div>
-        <div class="status-val">Operational</div>
-      </div>
-    </div>
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Database</div>
-        <div class="status-val">Operational</div>
-      </div>
-    </div>
-    <div class="status-card">
-      <span class="status-dot dot-green"></span>
-      <div class="status-info">
-        <div class="status-name">Commands</div>
-        <div class="status-val">All online</div>
-      </div>
-    </div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Bot API</div><div class="status-val">Operational</div></div></div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Gateway</div><div class="status-val">Connected</div></div></div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Railway Host</div><div class="status-val">Running</div></div></div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Webhooks</div><div class="status-val">Operational</div></div></div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Database</div><div class="status-val">Operational</div></div></div>
+    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Commands</div><div class="status-val">All online</div></div></div>
   </div>
 </section>
 
-<!-- ADD BOT BANNER -->
 <section class="add-banner" id="add">
   <h2>ready to add<br><em>bliss?</em></h2>
   <p>Takes 10 seconds. No config required to get started.</p>
-  <a href="https://discord.com/oauth2/authorize" class="btn-primary" id="add-bot-btn-2">
+  <a href="https://discord.com/oauth2/authorize" class="btn-primary">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
     add bliss to your server
   </a>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <span class="logo">bliss</span>
   <p>made with care &nbsp;·&nbsp; not affiliated with Discord Inc.</p>
@@ -552,23 +456,14 @@
 </footer>
 
 <script>
-  // Simulated server count (replace with real API fetch if you expose one)
-  document.getElementById('server-count').textContent = '—';
-
-  // Smooth nav highlight on scroll
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
   window.addEventListener('scroll', () => {
     let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--plum)' : '';
-    });
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + current ? 'var(--plum)' : ''; });
   });
 
-  // Stagger feature cards on scroll into view
   const cards = document.querySelectorAll('.feat-card');
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -579,6 +474,30 @@
     });
   }, { threshold: 0.1 });
   cards.forEach(c => { c.style.opacity = '0'; obs.observe(c); });
+
+  // Measure real latency to Discord API
+  (async () => {
+    try {
+      const start = performance.now();
+      await fetch('https://discord.com/api/v10/gateway', { cache: 'no-store' });
+      const ms = Math.round(performance.now() - start);
+      document.getElementById('latency-stat').textContent = ms + 'ms';
+    } catch {
+      document.getElementById('latency-stat').textContent = 'N/A';
+    }
+  })();
+
+  // Server count: show placeholder until you wire up a real API endpoint
+  // Replace the URL below with your bot's actual stats endpoint
+  (async () => {
+    try {
+      const res = await fetch('https://your-bot-api.example.com/stats');
+      const data = await res.json();
+      document.getElementById('server-count').textContent = data.guilds.toLocaleString();
+    } catch {
+      document.getElementById('server-count').textContent = '—';
+    }
+  })();
 </script>
 </body>
 </html>
