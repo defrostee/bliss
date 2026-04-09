@@ -5,6 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bliss — Discord Bot</title>
+<link rel="icon" type="image/png" href="bliss.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
@@ -439,7 +440,7 @@
 <section class="add-banner" id="add">
   <h2>ready to add<br><em>bliss?</em></h2>
   <p>Takes 10 seconds. No config required to get started.</p>
-  <a href="https://discord.com/oauth2/authorize" class="btn-primary">
+  <a href="https://discord.com/oauth2/authorize?client_id=1491888786697879633" class="btn-primary">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
     add bliss to your server
   </a>
@@ -475,7 +476,6 @@
   }, { threshold: 0.1 });
   cards.forEach(c => { c.style.opacity = '0'; obs.observe(c); });
 
-  // Measure real latency to Discord API
   (async () => {
     try {
       const start = performance.now();
@@ -487,8 +487,6 @@
     }
   })();
 
-  // Server count: show placeholder until you wire up a real API endpoint
-  // Replace the URL below with your bot's actual stats endpoint
   (async () => {
     try {
       const res = await fetch('https://your-bot-api.example.com/stats');
