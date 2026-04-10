@@ -1,501 +1,397 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bliss — Discord Bot</title>
-<link rel="icon" type="image/png" href="bliss.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add some - Bliss, to your Discord server</title>
+<link rel="icon" href="bliss.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;background:#020812;}
+body{overflow-y:auto;overflow-x:hidden;}
 
-  :root {
-    --blush-0: #fef6f9;
-    --blush-1: #fffafb;
-    --blush-2: #fef6f9;
-    --blush-3: #fef1f6;
-    --blush-4: #fbe9ee;
-    --rose:    #e8a0b4;
-    --rose-dk: #c4607e;
-    --plum:    #7c4f6a;
-    --ink:     #2a1a22;
-    --muted:   #8c6878;
-    --border:  #f0d8e4;
-  }
+#root{
+  width:100%;min-height:100vh;position:relative;
+  font-family:'DM Sans',sans-serif;
+}
 
-  html { scroll-behavior: smooth; }
+.layer{
+  position:absolute;top:0;left:0;
+  width:100%;
+  display:flex;flex-direction:column;align-items:center;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--blush-0);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
+#bliss-layer{ background:#fef6f9; z-index:1; }
+#bayo-layer{ background:#020812; z-index:2; }
 
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2.5rem;
-    height: 64px;
-    background: rgba(254,246,249,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.5rem;
-    color: var(--plum);
-    letter-spacing: -0.02em;
-  }
-  .nav-links { display: flex; gap: 2rem; }
-  .nav-links a {
-    font-size: 0.85rem; font-weight: 400; letter-spacing: 0.04em;
-    color: var(--muted); text-decoration: none; text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--plum); }
-  .nav-cta {
-    background: var(--plum);
-    color: #fff !important;
-    padding: 0.45rem 1.2rem;
-    border-radius: 999px;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em;
-    font-weight: 500 !important;
-    transition: background 0.2s !important;
-  }
-  .nav-cta:hover { background: var(--rose-dk) !important; color: #fff !important; }
+#bayo-layer .grid-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(40,100,220,0.13) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(40,100,220,0.13) 1px,transparent 1px);
+  background-size:40px 40px;
+}
 
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    padding: 6rem 2rem 4rem;
-    position: relative;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--blush-4) 0%, var(--blush-0) 70%);
-  }
+#divider-svg{
+  position:fixed;inset:0;z-index:10;pointer-events:none;
+  width:100%;height:100%;overflow:visible;
+  opacity:0;transition:opacity 0.18s;
+}
+#divider-svg.visible{opacity:1;}
 
-  .hero-pill {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: var(--blush-4); border: 1px solid var(--border);
-    border-radius: 999px; padding: 0.3rem 1rem;
-    font-size: 0.78rem; color: var(--plum); letter-spacing: 0.05em; text-transform: uppercase;
-    margin-bottom: 2rem;
-    animation: fadeUp 0.6s ease both;
-  }
-  .pill-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: #5cb85c;
-    box-shadow: 0 0 0 3px rgba(92,184,92,0.2);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(92,184,92,0.2); }
-    50% { box-shadow: 0 0 0 6px rgba(92,184,92,0.1); }
-  }
+#clip-svg{ position:absolute;width:0;height:0;overflow:visible;z-index:0;pointer-events:none; }
 
-  .hero h1 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(3.5rem, 9vw, 7rem);
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-  .hero h1 em { font-style: italic; color: var(--plum); }
+#handle{
+  position:fixed;top:50%;
+  transform:translate(-50%,-50%);
+  width:50px;height:50px;border-radius:50%;
+  cursor:grab;z-index:1000;user-select:none;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;
+  border:1.5px solid rgba(124,79,106,0.35);
+  box-shadow:0 2px 18px rgba(0,0,0,0.18);
+  transition:background 0.3s,border-color 0.3s,box-shadow 0.25s;
+}
+#handle.dark-side{
+  background:#04111f;
+  border-color:rgba(77,143,255,0.45);
+  box-shadow:0 2px 18px rgba(0,0,0,0.5);
+}
+#handle:hover{ box-shadow:0 2px 28px rgba(0,0,0,0.28),0 0 0 7px rgba(124,79,106,0.09); }
+#handle.dark-side:hover{ box-shadow:0 2px 28px rgba(0,0,0,0.5),0 0 0 7px rgba(77,143,255,0.1); }
+#handle.dragging{cursor:grabbing;}
 
-  .hero-sub {
-    max-width: 520px;
-    font-size: 1.05rem; font-weight: 300;
-    color: var(--muted); line-height: 1.7;
-    margin: 1.5rem auto 2.5rem;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
+#handle-icon{
+  pointer-events:none;display:block;
+  transition:transform 0.45s cubic-bezier(0.34,1.4,0.64,1);
+  will-change:transform;
+}
 
-  .hero-btns {
-    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: var(--plum); color: #fff;
-    padding: 0.8rem 2rem; border-radius: 999px;
-    font-size: 0.9rem; font-weight: 500; text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .btn-primary:hover { background: var(--rose-dk); transform: translateY(-2px); }
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: transparent; color: var(--plum);
-    border: 1.5px solid var(--border);
-    padding: 0.8rem 2rem; border-radius: 999px;
-    font-size: 0.9rem; font-weight: 400; text-decoration: none;
-    transition: border-color 0.2s, transform 0.15s, background 0.2s;
-  }
-  .btn-outline:hover { border-color: var(--rose); background: var(--blush-4); transform: translateY(-2px); }
+.hero{
+  width:100%;max-width:860px;
+  padding:clamp(1.5rem,4vw,3.5rem) clamp(1.2rem,5vw,3.5rem);
+  padding-bottom:2rem;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;z-index:1;
+}
 
-  .hero-cards {
-    display: flex; gap: 1rem; margin-top: 5rem; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-  .stat-card {
-    background: var(--blush-1);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.2rem 2rem;
-    text-align: center;
-    min-width: 130px;
-  }
-  .stat-card .num {
-    font-family: 'Instrument Serif', serif;
-    font-size: 2rem; color: var(--plum);
-  }
-  .stat-card .lbl {
-    font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 0.2rem;
-  }
+.pill{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  border-radius:999px;padding:0.28rem 1rem;
+  font-size:0.72rem;letter-spacing:0.07em;text-transform:uppercase;
+  margin-bottom:clamp(1rem,2.5vh,2rem);
+}
+.bliss-pill{background:#fbe9ee;border:1px solid #f0d8e4;color:#7c4f6a;}
+.bayo-pill{background:#05111f;border:1px solid #0d2a4a;color:#4d8fff;}
+.pill-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(76,175,80,0.2)}50%{box-shadow:0 0 0 6px rgba(76,175,80,0.08)}}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+h1{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(2.4rem,7vw,5.2rem);
+  line-height:1.05;letter-spacing:-0.03em;
+  margin-bottom:clamp(0.8rem,2vh,1.3rem);
+}
+.bliss-h1{color:#2a1a22;}.bliss-h1 em{color:#7c4f6a;font-style:italic;}
+.bayo-h1{color:#ddeeff;}.bayo-h1 em{color:#4d8fff;font-style:italic;}
 
-  .section-divider { height: 1px; background: var(--border); margin: 0 2rem; }
+.sub{
+  font-size:clamp(0.85rem,1.5vw,1rem);font-weight:300;line-height:1.8;
+  max-width:460px;margin-bottom:clamp(1.2rem,3vh,2.2rem);
+}
+.bliss-sub{color:#8c6878;}.bayo-sub{color:#5a7fa8;}
 
-  .section {
-    padding: 6rem 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .section-label {
-    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--rose); font-weight: 500; margin-bottom: 0.75rem;
-  }
-  .section-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    color: var(--ink); letter-spacing: -0.02em; line-height: 1.1;
-    margin-bottom: 3.5rem;
-  }
-  .section-title em { font-style: italic; color: var(--plum); }
+.cta{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.78rem 2.1rem;border-radius:999px;
+  font-size:0.88rem;font-weight:500;text-decoration:none;
+  border:none;cursor:pointer;
+  margin-bottom:clamp(1.4rem,3.5vh,2.8rem);
+  transition:opacity 0.15s,transform 0.15s;
+}
+.cta:hover{opacity:0.85;transform:translateY(-1px);}
+.bliss-cta{background:#7c4f6a;color:#fff;}
+.bayo-cta{background:#1a4fa0;color:#ddeeff;}
 
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.25rem;
-  }
-  .feat-card {
-    background: var(--blush-1);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.75rem;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .feat-card:hover { border-color: var(--rose); transform: translateY(-3px); }
-  .feat-icon {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: var(--blush-4);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-  }
-  .feat-title { font-weight: 500; font-size: 1rem; color: var(--ink); margin-bottom: 0.4rem; }
-  .feat-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+.stats{display:flex;gap:0.7rem;flex-wrap:wrap;justify-content:center;}
+.scard{border-radius:14px;padding:0.85rem 1.3rem;min-width:90px;text-align:center;}
+.bliss-scard{background:#fffafb;border:1px solid #f0d8e4;}
+.bayo-scard{background:#04090f;border:1px solid #0d2a4a;}
+.snum{font-family:'Instrument Serif',Georgia,serif;font-size:1.85rem;}
+.bliss-snum{color:#7c4f6a;}.bayo-snum{color:#4d8fff;}
+.slbl{font-size:0.69rem;letter-spacing:0.06em;text-transform:uppercase;margin-top:0.1rem;}
+.bliss-slbl{color:#8c6878;}.bayo-slbl{color:#2d5a8a;}
 
-  .commands-section {
-    background: var(--blush-3);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 6rem 2rem;
-  }
-  .commands-inner { max-width: 1100px; margin: 0 auto; }
+.commands-section{
+  width:100%;max-width:960px;
+  padding:3rem clamp(1.2rem,5vw,3.5rem) 6rem;
+  position:relative;z-index:1;
+}
 
-  .cmd-groups {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
-  }
-  .cmd-group {
-    background: var(--blush-1); border: 1px solid var(--border);
-    border-radius: 20px; overflow: hidden;
-  }
-  .cmd-group-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--plum); font-weight: 500;
-    background: var(--blush-4);
-  }
-  .cmd-list { padding: 0.75rem 0; }
-  .cmd-item {
-    display: flex; align-items: flex-start; gap: 0.75rem;
-    padding: 0.65rem 1.5rem;
-    transition: background 0.15s;
-  }
-  .cmd-item:hover { background: var(--blush-4); }
-  .cmd-name {
-    font-family: 'DM Sans', monospace;
-    font-size: 0.82rem; font-weight: 500;
-    color: var(--plum);
-    background: var(--blush-4);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.15rem 0.55rem;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .cmd-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; padding-top: 0.1rem; }
+.section-label{
+  font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+  margin-bottom:2rem;text-align:center;
+  padding:0.3rem 0.9rem;border-radius:999px;display:inline-block;
+}
+.bliss-section-label{color:#7c4f6a;background:#fbe9ee;border:1px solid #f0d8e4;}
+.bayo-section-label{color:#4d8fff;background:#05111f;border:1px solid #0d2a4a;}
 
-  .status-section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
-  .status-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
-  }
-  .status-card {
-    background: var(--blush-1); border: 1px solid var(--border);
-    border-radius: 16px; padding: 1.5rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot-green { background: #5cb85c; box-shadow: 0 0 0 4px rgba(92,184,92,0.2); animation: pulse 2s infinite; }
-  .status-info .status-name { font-weight: 500; font-size: 0.9rem; color: var(--ink); }
-  .status-info .status-val { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+.category-title{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:1.4rem; margin-bottom:1rem;
+  display:flex;align-items:center;gap:0.6rem;
+}
+.bliss .category-title{color:#2a1a22;}
+.bayo .category-title{color:#ddeeff;}
 
-  .add-banner {
-    background: var(--blush-4);
-    border-top: 1px solid var(--border);
-    padding: 5rem 2rem;
-    text-align: center;
-  }
-  .add-banner h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    letter-spacing: -0.02em; color: var(--ink);
-    margin-bottom: 0.75rem;
-  }
-  .add-banner h2 em { font-style: italic; color: var(--plum); }
-  .add-banner p { color: var(--muted); font-size: 1rem; margin-bottom: 2rem; }
+.category-num{
+  width:26px;height:26px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:500;
+}
+.bliss .category-num{background:#fbe9ee;color:#7c4f6a;border:1px solid #f0d8e4;}
+.bayo .category-num{background:#05111f;color:#4d8fff;border:1px solid #0d2a4a;}
 
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 2.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 1rem;
-    background: var(--blush-0);
-  }
-  footer .logo { font-family: 'Instrument Serif', serif; font-size: 1.1rem; color: var(--plum); }
-  footer p { font-size: 0.8rem; color: var(--muted); }
-  footer a { color: var(--muted); text-decoration: none; font-size: 0.8rem; }
-  footer a:hover { color: var(--plum); }
+.cmd-table{ width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden; }
+.bliss .cmd-table{border:1px solid #f0d8e4;}
+.bayo .cmd-table{border:1px solid #0d2a4a;}
 
-  @media (max-width: 600px) {
-    nav { padding: 0 1.25rem; }
-    .nav-links { display: none; }
-    .hero { padding: 5rem 1.25rem 3rem; }
-  }
+.cmd-table thead tr{ height: 40px; }
+.bliss .cmd-table thead tr{background:#fbe9ee;}
+.bayo .cmd-table thead tr{background:#04090f;}
+
+.cmd-table thead th{
+  padding:0.65rem 1rem; font-size:0.68rem;letter-spacing:0.08em;
+  text-transform:uppercase; font-weight:500; text-align:left;
+}
+.bliss .cmd-table thead th{color:#8c6878;}
+.bayo .cmd-table thead th{color:#2d5a8a;}
+
+.cmd-table td{ padding:0.75rem 1rem; font-size:0.84rem; line-height:1.5; }
+.bliss .cmd-table td{ color:#2a1a22; border-bottom:1px solid #f5e4ec; }
+.bayo .cmd-table td{ color:#aaccee; border-bottom:1px solid #0a1e30; }
+
+.bliss .cmd-table td:first-child{ color:#7c4f6a; font-family:'DM Mono',monospace; }
+.bayo .cmd-table td:first-child{ color:#4d8fff; font-family:'DM Mono',monospace; }
+
+#bottom-bar{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  z-index:2000; display:flex;align-items:center;gap:0.5rem;
+  padding:0.45rem 0.9rem 0.45rem 1.1rem; border-radius:999px;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  transition:background 0.3s,border-color 0.3s,box-shadow 0.3s;
+  white-space:nowrap; font-size:0.72rem;
+}
+#bottom-bar.bliss-bar{ background:rgba(254,246,249,0.92); border:1px solid #f0d8e4; color:#8c6878; }
+#bottom-bar.bayo-bar{ background:rgba(2,8,18,0.92); border:1px solid #0d2a4a; color:#2d5a8a; }
+
+.bar-btn{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  padding:0.32rem 0.75rem;border-radius:999px;
+  font-size:0.72rem;font-weight:500;text-decoration:none;
+}
+.bliss-bar .bar-btn{color:#7c4f6a;background:#fbe9ee;border:1px solid #f0d8e4;}
+.bayo-bar .bar-btn{color:#4d8fff;background:#05111f;border:1px solid #0d2a4a;}
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&display=swap');
 </style>
 </head>
 <body>
 
-<nav>
-  <span class="nav-logo">bliss</span>
-  <div class="nav-links">
-    <a href="#features">features</a>
-    <a href="#commands">commands</a>
-    <a href="#status">status</a>
-    <a href="#add" class="nav-cta">add bot</a>
-  </div>
-</nav>
+<svg id="clip-svg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="wave-clip" clipPathUnits="userSpaceOnUse">
+      <path id="clip-path-el"/>
+    </clipPath>
+  </defs>
+</svg>
 
-<section class="hero">
-  <div class="hero-pill">
-    <span class="pill-dot"></span>
-    online &amp; ready
-  </div>
+<div id="root">
 
-  <h1>your server,<br><em>elevated.</em></h1>
-
-  <p class="hero-sub">
-    Bliss is a lightweight but powerful Discord bot built for moderation, fun, and freedom.
-    Fake nitro perks, ping protection, color roles, and more — all with a soft touch.
-  </p>
-
-  <div class="hero-btns">
-    <a href="https://discord.com/oauth2/authorize?client_id=1491888786697879633" class="btn-primary">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-      add bliss to your server
-    </a>
-    <a href="#commands" class="btn-outline">view commands</a>
-  </div>
-
-  <div class="hero-cards">
-    <div class="stat-card">
-      <div class="num" id="server-count">...</div>
-      <div class="lbl">servers</div>
-    </div>
-    <div class="stat-card">
-      <div class="num">10</div>
-      <div class="lbl">commands</div>
-    </div>
-    <div class="stat-card">
-      <div class="num" id="latency-stat">...</div>
-      <div class="lbl">avg latency</div>
-    </div>
-    <div class="stat-card">
-      <div class="num">free</div>
-      <div class="lbl">always</div>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<section class="section" id="features">
-  <p class="section-label">what bliss does</p>
-  <h2 class="section-title">everything you need,<br><em>nothing you don't.</em></h2>
-
-  <div class="features-grid">
-    <div class="feat-card">
-      <div class="feat-icon">🛡️</div>
-      <div class="feat-title">Ping Protection</div>
-      <div class="feat-desc">5-stage escalation ladder — warning, timeout, longer timeout, kick, and finally ban — for users who won't stop pinging protected members.</div>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">✨</div>
-      <div class="feat-title">Fake Nitro</div>
-      <div class="feat-desc">Use nitro-only emojis and stickers without paying a cent. Bliss sends them as a webhook using your exact avatar and display name.</div>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">🎨</div>
-      <div class="feat-title">Color Roles</div>
-      <div class="feat-desc">Give yourself a personalized hex color cosmetic role. No permissions, just vibes. Updates live if you change your mind.</div>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">🔥</div>
-      <div class="feat-title">Channel Purge</div>
-      <div class="feat-desc">Mods can wipe an entire channel instantly via clone-and-delete — no 14-day message limit, no bulk-delete cap.</div>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">👋</div>
-      <div class="feat-title">Auto-Role</div>
-      <div class="feat-desc">Automatically assign a role to every new member who joins. Set it once and forget it.</div>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">😴</div>
-      <div class="feat-title">Ping Easter Egg</div>
-      <div class="feat-desc">Bliss responds to pings with snarky sleepy messages. Dare to ping twice after the warning and your nickname gets changed to something humbling.</div>
-    </div>
-  </div>
-</section>
-
-<section class="commands-section" id="commands">
-  <div class="commands-inner">
-    <p class="section-label">reference</p>
-    <h2 class="section-title" style="margin-bottom:3rem">all commands</h2>
-
-    <div class="cmd-groups">
-      <div class="cmd-group">
-        <div class="cmd-group-header">🌸 Everyone</div>
-        <div class="cmd-list">
-          <div class="cmd-item"><span class="cmd-name">-ping</span><span class="cmd-desc">Check if Bliss is alive. Watch your step.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-help</span><span class="cmd-desc">Show command list &amp; ping owner + mod role.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-fnitro option:react</span><span class="cmd-desc">Fake react with a nitro emoji as yourself via webhook.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-fnitro option:sticker</span><span class="cmd-desc">Send a nitro sticker as yourself via webhook.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-color color:#hex</span><span class="cmd-desc">Create or update your personal cosmetic color role.</span></div>
-        </div>
+  <div class="layer bliss" id="bliss-layer">
+    <div class="hero">
+      <div class="pill bliss-pill"><span class="pill-dot"></span><span>online &amp; ready</span></div>
+      <h1 class="bliss-h1">your server,<br><em>elevated.</em></h1>
+      <p class="sub bliss-sub">Bliss is a lightweight moderation bot with a soft aesthetic.</p>
+      <a href="#" class="cta bliss-cta">add bliss to your server</a>
+      <div class="stats">
+        <div class="scard bliss-scard"><div class="snum bliss-snum">1.2k</div><div class="slbl bliss-slbl">servers</div></div>
+        <div class="scard bliss-scard"><div class="snum bliss-snum">45k</div><div class="slbl bliss-slbl">users</div></div>
       </div>
+    </div>
 
-      <div class="cmd-group">
-        <div class="cmd-group-header">🔒 Mod Role</div>
-        <div class="cmd-list">
-          <div class="cmd-item"><span class="cmd-name">-nuke #channel</span><span class="cmd-desc">Delete all messages in the specified channel by cloning and removing it.</span></div>
-        </div>
+    <div class="commands-section">
+      <div style="text-align:center;margin-bottom:2.5rem;">
+        <span class="section-label bliss-section-label">bliss commands</span>
       </div>
-
-      <div class="cmd-group">
-        <div class="cmd-group-header">👑 Owner Only</div>
-        <div class="cmd-list">
-          <div class="cmd-item"><span class="cmd-name">-bumpr</span><span class="cmd-desc">Reminds the server to use the /bump command for your bump bot!</span></div>
-          <div class="cmd-item"><span class="cmd-name">-s!mr @role</span><span class="cmd-desc">Set the server's mod role for restricted commands.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-s!ping set:yes/no</span><span class="cmd-desc">Enable or disable ping protection on a user or role.</span></div>
-          <div class="cmd-item"><span class="cmd-name">-s!autorole @role</span><span class="cmd-desc">Set the role automatically given to every new member.</span></div>
-        </div>
+      <div class="category-block">
+        <div class="category-title"><span class="category-num">1</span> Moderation</div>
+        <table class="cmd-table">
+          <thead><tr><th style="width:30%">Command</th><th>Info</th><th style="width:18%">Usage</th></tr></thead>
+          <tbody>
+            <tr><td>/kick</td><td>Remove a disruptive member.</td><td>/kick [user]</td></tr>
+            <tr><td>/ban</td><td>Permanently remove a member.</td><td>/ban [user]</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</section>
 
-<section class="status-section" id="status">
-  <p class="section-label">system</p>
-  <h2 class="section-title">current <em>status</em></h2>
+  <div class="layer bayo" id="bayo-layer" style="clip-path:url(#wave-clip);">
+    <div class="grid-bg"></div>
+    <div class="hero">
+      <div class="pill bayo-pill"><span class="pill-dot"></span><span>Bayo · online</span></div>
+      <h1 class="bayo-h1">your server,<br><em>reimagined.</em></h1>
+      <p class="sub bayo-sub">Bayo is a high-performance bot for power users and big servers.</p>
+      <a href="#" class="cta bayo-cta">invite Bayo</a>
+      <div class="stats">
+        <div class="scard bayo-scard"><div class="snum bayo-snum">2.8k</div><div class="slbl bayo-slbl">servers</div></div>
+        <div class="scard bayo-scard"><div class="snum bayo-snum">120k</div><div class="slbl bayo-slbl">users</div></div>
+      </div>
+    </div>
 
-  <div class="status-grid">
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Bot API</div><div class="status-val">Operational</div></div></div>
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Gateway</div><div class="status-val">Connected</div></div></div>
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Railway Host</div><div class="status-val">Running</div></div></div>
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Webhooks</div><div class="status-val">Operational</div></div></div>
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Database</div><div class="status-val">Operational</div></div></div>
-    <div class="status-card"><span class="status-dot dot-green"></span><div class="status-info"><div class="status-name">Commands</div><div class="status-val">All online</div></div></div>
+    <div class="commands-section">
+      <div style="text-align:center;margin-bottom:2.5rem;">
+        <span class="section-label bayo-section-label">bayo commands</span>
+      </div>
+      <div class="category-block">
+        <div class="category-title"><span class="category-num">1</span> Advanced Admin</div>
+        <table class="cmd-table">
+          <thead><tr><th style="width:30%">Command</th><th>Info</th><th style="width:18%">Usage</th></tr></thead>
+          <tbody>
+            <tr><td>/antiraid</td><td>Enable high-security mode.</td><td>/antiraid on</td></tr>
+            <tr><td>/logs</td><td>View deep server audit logs.</td><td>/logs [type]</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</section>
 
-<section class="add-banner" id="add">
-  <h2>ready to add<br><em>bliss?</em></h2>
-  <p>Takes 10 seconds. No config required to get started.</p>
-  <a href="https://discord.com/oauth2/authorize?client_id=1491888786697879633" class="btn-primary">
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-    add bliss to your server
-  </a>
-</section>
+  <svg id="divider-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow-pink"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow-blue"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <path id="sq-glow" fill="none" stroke-width="9" stroke-linecap="round" opacity="0.55"/>
+    <path id="sq-line" fill="none" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
 
-<footer>
-  <span class="logo">bliss</span>
-  <p>made with care &nbsp;·&nbsp; not affiliated with Discord Inc.</p>
-  <div style="display:flex;gap:1.5rem">
-    <a href="#features">features</a>
-    <a href="#commands">commands</a>
-    <a href="#status">status</a>
-  </div>
-</footer>
+<div id="handle">
+  <svg id="handle-icon" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8M13 8l4 4-4 4"/>
+  </svg>
+</div>
+
+<div id="bottom-bar" class="bliss-bar">
+  <span class="bar-copy">© 2026 Bliss Bot</span>
+  <span class="bar-sep">·</span>
+  <a href="#" class="bar-btn"><i class="fab fa-github"></i> GitHub</a>
+</div>
 
 <script>
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
-    navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + current ? 'var(--plum)' : ''; });
-  });
+const handle = document.getElementById('handle'), 
+      handleIcon = document.getElementById('handle-icon'),
+      divSvg = document.getElementById('divider-svg'),
+      sqLine = document.getElementById('sq-line'),
+      sqGlow = document.getElementById('sq-glow'),
+      clipPathEl = document.getElementById('clip-path-el'),
+      bottomBar = document.getElementById('bottom-bar'),
+      blissLayer = document.getElementById('bliss-layer'),
+      bayoLayer = document.getElementById('bayo-layer');
 
-  const cards = document.querySelectorAll('.feat-card');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        entry.target.style.animation = `fadeUp 0.5s ${i * 0.07}s ease both`;
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  cards.forEach(c => { c.style.opacity = '0'; obs.observe(c); });
+const AMP = 10, FREQ = 70, STEP = 2, SPEED = 0.55;
+let scrollOffset = 0, currentX = 0, isBayo = false, dragging = false, startMouseX = 0, arrowDir = 1, animatingSnap = false;
 
-  (async () => {
-    try {
-      const start = performance.now();
-      await fetch('https://discord.com/api/v10/gateway', { cache: 'no-store' });
-      const ms = Math.round(performance.now() - start);
-      document.getElementById('latency-stat').textContent = ms + 'ms';
-    } catch {
-      document.getElementById('latency-stat').textContent = 'N/A';
-    }
-  })();
+function W(){ return window.innerWidth; }
 
-  (async () => {
-    try {
-      const res = await fetch('https://your-bot-api.example.com/stats');
-      const data = await res.json();
-      document.getElementById('server-count').textContent = data.guilds.toLocaleString();
-    } catch {
-      document.getElementById('server-count').textContent = '—';
-    }
-  })();
+function syncHeights(){
+  const h = Math.max(blissLayer.scrollHeight, bayoLayer.scrollHeight);
+  document.getElementById('root').style.height = h + 'px';
+  blissLayer.style.minHeight = bayoLayer.style.minHeight = h + 'px';
+}
+
+function buildPath(x, scrollY, h, offset, filled){
+  const startY = scrollY - 140, endY = h + scrollY + 140;
+  let d = '';
+  for(let y = startY; y <= endY; y += STEP){
+    const wx = x + Math.sin(((y + offset) / FREQ) * Math.PI * 2) * AMP;
+    d += (d === '' ? 'M' : 'L') + ` ${wx} ${y}`;
+    if(y >= endY - STEP && filled) d += ` L ${wx} ${endY} L -20 ${endY} L -20 ${startY} Z`;
+  }
+  return d;
+}
+
+function render(){
+  const w = W(), h = window.innerHeight, sY = window.scrollY;
+  sqLine.setAttribute('d', buildPath(currentX, sY, h, scrollOffset, false));
+  sqGlow.setAttribute('d', sqLine.getAttribute('d'));
+  clipPathEl.setAttribute('d', buildPath(currentX, sY, h, scrollOffset, true));
+  handle.style.left = currentX + 'px';
+
+  const onDark = currentX > w / 2;
+  handle.classList.toggle('dark-side', onDark);
+  handleIcon.setAttribute('stroke', onDark ? '#4d8fff' : '#7c4f6a');
+  
+  const wantLeft = currentX <= w / 2;
+  const newDir = wantLeft ? 1 : -1;
+  if(newDir !== arrowDir){ arrowDir = newDir; handleIcon.style.transform = `scaleX(${arrowDir})`; }
+
+  if(onDark){
+    sqLine.setAttribute('stroke','#4d8fff');
+    sqGlow.setAttribute('stroke','rgba(77,143,255,0.55)');
+    sqGlow.setAttribute('filter','url(#glow-blue)');
+  } else {
+    sqLine.setAttribute('stroke','#c47aa0');
+    sqGlow.setAttribute('stroke','rgba(196,122,160,0.55)');
+    sqGlow.setAttribute('filter','url(#glow-pink)');
+  }
+}
+
+function updateUI(){
+  const onDark = currentX > W() / 2;
+  bottomBar.className = onDark ? 'bayo-bar' : 'bliss-bar';
+  bottomBar.querySelector('.bar-copy').textContent = onDark ? '© 2026 Bayo Bot' : '© 2026 Bliss Bot';
+}
+
+function loop(){
+  scrollOffset += SPEED;
+  if(divSvg.classList.contains('visible') || animatingSnap) render();
+  requestAnimationFrame(loop);
+}
+loop();
+
+function snapTo(toBayo){
+  isBayo = toBayo;
+  const from = currentX, to = toBayo ? W() : 0, dur = 400, t0 = performance.now();
+  animatingSnap = true;
+  divSvg.classList.remove('visible');
+  updateUI();
+  (function tick(now){
+    const t = Math.min((now - t0) / dur, 1);
+    const ease = t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    currentX = from + (to - from) * ease;
+    render(); updateUI();
+    if(t < 1) requestAnimationFrame(tick);
+    else { currentX = to; animatingSnap = false; render(); }
+  })(t0);
+}
+
+function init(){ syncHeights(); currentX = 0; render(); updateUI(); }
+init();
+window.addEventListener('resize', init);
+window.addEventListener('scroll', () => { if(divSvg.classList.contains('visible') || animatingSnap) render(); }, {passive:true});
+
+handle.addEventListener('mousedown', e => { if(animatingSnap) return; dragging = true; startMouseX = e.clientX; handle.classList.add('dragging'); divSvg.classList.add('visible'); e.preventDefault(); });
+document.addEventListener('mousemove', e => { if(!dragging) return; const dx = e.clientX - startMouseX; startMouseX = e.clientX; currentX = Math.max(0, Math.min(currentX + dx, W())); render(); });
+document.addEventListener('mouseup', () => { if(!dragging) return; dragging = false; handle.classList.remove('dragging'); snapTo(currentX > W() / 2); });
+
+// Touch Support
+handle.addEventListener('touchstart', e => { if(animatingSnap) return; dragging = true; startMouseX = e.touches[0].clientX; divSvg.classList.add('visible'); }, {passive:false});
+document.addEventListener('touchmove', e => { if(!dragging) return; currentX = Math.max(0, Math.min(e.touches[0].clientX, W())); render(); }, {passive:true});
+document.addEventListener('touchend', () => { if(!dragging) return; dragging = false; snapTo(currentX > W() / 2); });
 </script>
 </body>
 </html>
