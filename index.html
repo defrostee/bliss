@@ -11,27 +11,16 @@
 /* Reset and custom scrollbar */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Hide default scrollbar but allow scrolling */
-html {
-  scrollbar-width: thin;
-  scrollbar-color: #7c4f6a transparent;
-  background: #020812;
-}
-
 body {
   width: 100%;
   height: 100%;
   background: #020812;
-  overflow: hidden; /* Prevent browser scrollbar */
+  overflow: hidden; /* Prevent default browser scrollbar */
 }
 
 /* Custom Scrollbar Styling */
-#root::-webkit-scrollbar {
-  width: 6px;
-}
-#root::-webkit-scrollbar-track {
-  background: transparent;
-}
+#root::-webkit-scrollbar { width: 6px; }
+#root::-webkit-scrollbar-track { background: transparent; }
 #root::-webkit-scrollbar-thumb {
   background: rgba(124, 79, 106, 0.4);
   border-radius: 10px;
@@ -45,8 +34,9 @@ body {
   height: 100vh;
   position: relative;
   font-family: 'DM Sans', sans-serif;
-  overflow-y: auto; /* Custom scroll area */
+  overflow-y: auto;
   overflow-x: hidden;
+  background: #020812; /* Matches Bayo background to prevent white flashes */
 }
 
 .layer {
@@ -95,6 +85,7 @@ body {
   background: #04111f;
   border-color: rgba(77,143,255,0.45);
 }
+#handle.dragging { cursor: grabbing; }
 
 .hero {
   width: 100%; max-width: 860px;
@@ -102,50 +93,85 @@ body {
   text-align: center; z-index: 1;
 }
 
+.pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: 999px; padding: 0.3rem 1rem;
+  font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+.bliss-pill { background: #fbe9ee; border: 1px solid #f0d8e4; color: #7c4f6a; }
+.bayo-pill { background: #05111f; border: 1px solid #0d2a4a; color: #4d8fff; }
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
 h1 {
   font-family: 'Instrument Serif', serif;
   font-size: clamp(2.5rem, 8vw, 5rem);
   line-height: 1.1; margin-bottom: 1.5rem;
 }
 .bliss-h1 { color: #2a1a22; }
+.bliss-h1 em { color: #7c4f6a; font-style: italic; }
 .bayo-h1 { color: #ddeeff; }
+.bayo-h1 em { color: #4d8fff; font-style: italic; }
 
-.sub { max-width: 500px; margin: 0 auto 2rem; font-weight: 300; line-height: 1.6; }
+.sub { max-width: 500px; margin: 0 auto 2.5rem; font-weight: 300; line-height: 1.7; font-size: 1.1rem; }
 .bliss-sub { color: #8c6878; }
 .bayo-sub { color: #5a7fa8; }
 
 .cta {
-  display: inline-block; padding: 0.8rem 2rem; border-radius: 99px;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 2.2rem; border-radius: 99px;
   text-decoration: none; font-weight: 500; transition: 0.2s;
 }
 .bliss-cta { background: #7c4f6a; color: #fff; }
 .bayo-cta { background: #1a4fa0; color: #fff; }
 
-.commands-section { width: 100%; max-width: 900px; padding: 4rem 2rem 10rem; }
+.stats { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 3rem; }
+.scard { padding: 1.2rem; border-radius: 16px; min-width: 110px; text-align: center; }
+.bliss-scard { background: #fffafb; border: 1px solid #f0d8e4; }
+.bayo-scard { background: #04090f; border: 1px solid #0d2a4a; }
+.snum { font-family: 'Instrument Serif', serif; font-size: 2rem; display: block; }
+.bliss-snum { color: #7c4f6a; }
+.bayo-snum { color: #4d8fff; }
+.slbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.2rem; opacity: 0.7; }
 
-.cmd-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; }
+.commands-section { width: 100%; max-width: 900px; padding: 6rem 2rem 12rem; }
+.category-title {
+  font-family: 'Instrument Serif', serif; font-size: 1.6rem; margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.bliss .category-title { color: #2a1a22; }
+.bayo .category-title { color: #ddeeff; }
+
+.cmd-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; margin-bottom: 3rem; }
 .bliss .cmd-table { border: 1px solid #f0d8e4; background: #fff; }
 .bayo .cmd-table { border: 1px solid #0d2a4a; background: #04090f; }
 
-.cmd-table th { padding: 1rem; text-align: left; font-size: 0.7rem; text-transform: uppercase; }
+.cmd-table th { padding: 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
 .bliss th { background: #fbe9ee; color: #7c4f6a; }
 .bayo th { background: #05111f; color: #4d8fff; }
 
-.cmd-table td { padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.9rem; }
+.cmd-table td { padding: 1rem; font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.03); }
 .bliss td { color: #2a1a22; }
 .bayo td { color: #aaccee; border-color: rgba(255,255,255,0.05); }
 
 #bottom-bar {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  z-index: 2000; display: flex; align-items: center; gap: 1rem;
+  z-index: 2000; display: flex; align-items: center; gap: 0.8rem;
   padding: 0.6rem 1.2rem; border-radius: 99px;
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   font-size: 0.75rem; transition: 0.3s;
 }
-.bliss-bar { background: rgba(254, 246, 249, 0.8); border: 1px solid #f0d8e4; color: #7c4f6a; }
-.bayo-bar { background: rgba(2, 8, 18, 0.8); border: 1px solid #0d2a4a; color: #4d8fff; }
+.bliss-bar { background: rgba(254, 246, 249, 0.85); border: 1px solid #f0d8e4; color: #7c4f6a; }
+.bayo-bar { background: rgba(2, 8, 18, 0.85); border: 1px solid #0d2a4a; color: #4d8fff; }
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&display=swap');
+.bar-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.8rem; border-radius: 99px;
+  text-decoration: none; color: inherit; transition: 0.2s;
+}
+.bliss-bar .bar-btn { background: #fbe9ee; border: 1px solid #f0d8e4; }
+.bayo-bar .bar-btn { background: #05111f; border: 1px solid #0d2a4a; }
 </style>
 </head>
 <body>
@@ -161,16 +187,24 @@ h1 {
 <div id="root">
   <div class="layer bliss" id="bliss-layer">
     <div class="hero">
+      <div class="pill bliss-pill"><span class="pill-dot"></span>Online & Ready</div>
       <h1 class="bliss-h1">your server, <em>elevated.</em></h1>
-      <p class="sub bliss-sub">Bliss is a lightweight moderation bot with a soft aesthetic.</p>
-      <a href="#" class="cta bliss-cta">add bliss</a>
+      <p class="sub bliss-sub">Bliss is a lightweight moderation bot with a soft touch and powerful features.</p>
+      <a href="#" class="cta bliss-cta"><i class="fas fa-plus"></i> Add Bliss</a>
+      <div class="stats">
+        <div class="scard bliss-scard"><span class="snum bliss-snum">1.2k</span><span class="slbl bliss-slbl">Servers</span></div>
+        <div class="scard bliss-scard"><span class="snum bliss-snum">45k</span><span class="slbl bliss-slbl">Users</span></div>
+        <div class="scard bliss-scard"><span class="snum bliss-snum">99%</span><span class="slbl bliss-slbl">Uptime</span></div>
+      </div>
     </div>
     <div class="commands-section">
+      <div class="category-title">Moderation</div>
       <table class="cmd-table">
-        <thead><tr><th>Command</th><th>Info</th></tr></thead>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>/kick</td><td>Remove a disruptive member.</td></tr>
-          <tr><td>/ban</td><td>Permanently remove a member.</td></tr>
+          <tr><td>/kick</td><td>Remove a disruptive member safely.</td></tr>
+          <tr><td>/ban</td><td>Permanently remove a member from the server.</td></tr>
+          <tr><td>/mute</td><td>Prevent a user from sending messages.</td></tr>
         </tbody>
       </table>
     </div>
@@ -179,16 +213,24 @@ h1 {
   <div class="layer bayo" id="bayo-layer" style="clip-path:url(#wave-clip);">
     <div class="grid-bg"></div>
     <div class="hero">
+      <div class="pill bayo-pill"><span class="pill-dot"></span>Bayo · Active</div>
       <h1 class="bayo-h1">your server, <em>reimagined.</em></h1>
-      <p class="sub bayo-sub">Bayo is a high-performance bot for power users and big servers.</p>
-      <a href="#" class="cta bayo-cta">invite bayo</a>
+      <p class="sub bayo-sub">High-performance automation and advanced security for power users.</p>
+      <a href="#" class="cta bayo-cta"><i class="fas fa-bolt"></i> Invite Bayo</a>
+      <div class="stats">
+        <div class="scard bayo-scard"><span class="snum bayo-snum">2.8k</span><span class="slbl bayo-slbl">Servers</span></div>
+        <div class="scard bayo-scard"><span class="snum bayo-snum">120k</span><span class="slbl bayo-slbl">Users</span></div>
+        <div class="scard bayo-scard"><span class="snum bayo-snum">0.2s</span><span class="slbl bayo-slbl">Latency</span></div>
+      </div>
     </div>
     <div class="commands-section">
+      <div class="category-title">Advanced Security</div>
       <table class="cmd-table">
-        <thead><tr><th>Command</th><th>Info</th></tr></thead>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>/antiraid</td><td>Enable high-security mode.</td></tr>
-          <tr><td>/logs</td><td>View deep server audit logs.</td></tr>
+          <tr><td>/antiraid</td><td>Instantly lock down server entry points.</td></tr>
+          <tr><td>/logs</td><td>Comprehensive audit trail of all actions.</td></tr>
+          <tr><td>/setup</td><td>Automated configuration for large servers.</td></tr>
         </tbody>
       </table>
     </div>
@@ -212,7 +254,8 @@ h1 {
 
 <div id="bottom-bar" class="bliss-bar">
   <span class="bar-copy">© 2026 Bliss Bot</span>
-  <a href="#" style="color:inherit; text-decoration:none;"><i class="fab fa-github"></i> GitHub</a>
+  <a href="#" class="bar-btn"><i class="fab fa-github"></i> GitHub</a>
+  <a href="#" class="bar-btn"><i class="fas fa-book"></i> Docs</a>
 </div>
 
 <script>
@@ -223,12 +266,10 @@ const root = document.getElementById('root'),
       sqLine = document.getElementById('sq-line'),
       sqGlow = document.getElementById('sq-glow'),
       clipPathEl = document.getElementById('clip-path-el'),
-      bottomBar = document.getElementById('bottom-bar'),
-      blissLayer = document.getElementById('bliss-layer'),
-      bayoLayer = document.getElementById('bayo-layer');
+      bottomBar = document.getElementById('bottom-bar');
 
 const AMP = 10, FREQ = 70, STEP = 2, SPEED = 0.55;
-let scrollOffset = 0, currentX = 0, dragging = false, startMouseX = 0, animatingSnap = false;
+let scrollOffset = 0, currentX = 0, dragging = false, animatingSnap = false;
 
 function buildPath(x, sY, h, offset, filled){
   const startY = -140, endY = h + 140;
@@ -289,9 +330,14 @@ function snapTo(toBayo){
 }
 
 root.addEventListener('scroll', () => render(), {passive:true});
-handle.addEventListener('mousedown', e => { dragging = true; startMouseX = e.clientX; divSvg.classList.add('visible'); e.preventDefault(); });
+handle.addEventListener('mousedown', e => { dragging = true; divSvg.classList.add('visible'); e.preventDefault(); });
 document.addEventListener('mousemove', e => { if(!dragging) return; currentX = Math.max(0, Math.min(e.clientX, window.innerWidth)); render(); });
 document.addEventListener('mouseup', () => { if(!dragging) return; dragging = false; snapTo(currentX > window.innerWidth / 2); });
+
+// Touch support
+handle.addEventListener('touchstart', e => { dragging = true; divSvg.classList.add('visible'); }, {passive:true});
+document.addEventListener('touchmove', e => { if(!dragging) return; currentX = Math.max(0, Math.min(e.touches[0].clientX, window.innerWidth)); render(); }, {passive:true});
+document.addEventListener('touchend', () => { if(!dragging) return; dragging = false; snapTo(currentX > window.innerWidth / 2); });
 
 window.addEventListener('resize', () => { currentX = 0; render(); });
 render(); updateUI();
